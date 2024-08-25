@@ -21,7 +21,6 @@ const Header = () => {
   const getCategoryList = () => {
     GlobalApi.getCategory()
       .then((response) => {
-        console.log("Categories:", response.data.data);
         setCategoryList(response.data.data);
       })
       .catch((error) => {
@@ -46,7 +45,6 @@ const Header = () => {
                 {category?.attributes?.icon?.data?.map((icon, iconIndex) => {
                   const iconUrl = icon?.attributes?.url;
                   const fullIconUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${iconUrl}`;
-                  console.log(fullIconUrl)
                   return (
                     <Image
                       key={iconIndex}
