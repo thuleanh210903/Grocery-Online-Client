@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosClient = axios.create(
     {
-        baseURL: 'http://192.168.1.19:1337/api'
+        baseURL: 'http://10.50.98.227:1337/api'
     }
 )
 
@@ -16,9 +16,14 @@ const getProductList = ()=>axiosClient.get('/products?populate=*').then(response
     return response.data.data
 })
 
+const getProductsByCategory=(category)=>axiosClient.get('/products?filters[categories][name][$in]='+category+'&populate=*').then(response=>{
+    return response.data.data
+})
+
 
 export default {
     getCategory,
     getCategoryList,
-    getProductList
+    getProductList,
+    getProductsByCategory
 }
