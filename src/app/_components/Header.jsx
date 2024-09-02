@@ -30,13 +30,7 @@ const Header = () => {
     router.push('/sign-in')
   } 
 
-  useEffect(() => {
-    const jwt = sessionStorage.getItem("jwt");
-    if (jwt) {
-      setIsLogIn(true);
-    }
-  }, []);
-
+  
   useEffect(() => {
     getCategoryList();
   }, []);
