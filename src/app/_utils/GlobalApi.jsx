@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosClient = axios.create(
     {
-        baseURL: 'http://10.50.98.227:1337/api'
+        baseURL: 'http://192.168.1.6:1337/api'
     }
 )
 
@@ -20,10 +20,17 @@ const getProductsByCategory=(category)=>axiosClient.get('/products?filters[categ
     return response.data.data
 })
 
+const register = (username, email, password) => axiosClient.post('/auth/local/register', {username:username, email:email, password: password} )
 
+const signIn=(email, password) => axiosClient.post('/auth/local', {
+    identifier: email,
+    password: password
+})
 export default {
     getCategory,
     getCategoryList,
     getProductList,
-    getProductsByCategory
+    getProductsByCategory,
+    register,
+    signIn
 }
