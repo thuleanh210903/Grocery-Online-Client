@@ -9,7 +9,6 @@ export default async function Home() {
   const productList = await GlobalApi.getProductList()
   return (
     <div className="pl-20">
-      <Header />
       <CategoryList categoryList={categoryList}/>
       <ProductList productList = {productList} />
     </div>

@@ -1,7 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { LayoutGrid, Search, ShoppingBag } from "lucide-react";
+import  { useRouter } from "next/navigation";
+
+import {
+  CircleUserRound,
+  LayoutGrid,
+  Link,
+  Search,
+  ShoppingBag,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,6 +22,15 @@ import GlobalApi from "../_utils/GlobalApi";
 const Header = () => {
   const [categoryList, setCategoryList] = useState([]);
 
+  const isLogIn = sessionStorage.getItem("jwt") ? true : false;
+  const router = useRouter()
+
+  const onSignOut = () => {
+    sessionStorage.clear()
+    router.push('/sign-in')
+  } 
+
+  
   useEffect(() => {
     getCategoryList();
   }, []);
@@ -41,23 +58,25 @@ const Header = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {categoryList.map((category, index) => (
-              <DropdownMenuItem key={index}>
-                {category?.attributes?.icon?.data?.map((icon, iconIndex) => {
-                  const iconUrl = icon?.attributes?.url;
-                  const fullIconUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${iconUrl}`;
-                  return (
-                    <Image
-                      key={iconIndex}
-                      src={fullIconUrl}
-                      alt={`icon-${iconIndex}`}
-                      width={23}
-                      height={23}
-                      unoptimized={true}
-                    />
-                  );
-                })}
-                <h2>{category?.attributes?.name}</h2>
-              </DropdownMenuItem>
+              <Link key={index}>
+                <DropdownMenuItem>
+                  {category?.attributes?.icon?.data?.map((icon, iconIndex) => {
+                    const iconUrl = icon?.attributes?.url;
+                    const fullIconUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${iconUrl}`;
+                    return (
+                      <Image
+                        key={iconIndex}
+                        src={fullIconUrl}
+                        alt={`icon-${iconIndex}`}
+                        width={23}
+                        height={23}
+                        unoptimized={true}
+                      />
+                    );
+                  })}
+                  <h2>{category?.attributes?.name}</h2>
+                </DropdownMenuItem>
+              </Link>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -71,7 +90,26 @@ const Header = () => {
         <h2 className="flex gap-2 text-lg ">
           <ShoppingBag />0
         </h2>
-        <Button>Login</Button>
+
+        {!isLogIn ? (
+          <a href="/sign-in">
+             <Button as="span">
+              
+              Login</Button>
+          </a>
+           
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <CircleUserRound className=" cursor-pointer h-12 w-12 bg-green-100 text-primary p-2 rounded-full " />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>My order</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>onSignOut()}>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </div>
   );
