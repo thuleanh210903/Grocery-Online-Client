@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import  { useRouter } from "next/navigation";
-
+import { useContext } from "react";
+import { UpdateCartContext } from "../_context/UpdateCartContext";
 import {
   CircleUserRound,
   LayoutGrid,
   Link,
   Search,
   ShoppingBag,
+  ShoppingBasket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +24,15 @@ import GlobalApi from "../_utils/GlobalApi";
 const Header = () => {
   const [categoryList, setCategoryList] = useState([]);
 
+  const jwt = sessionStorage.getItem('jwt')
   const isLogIn = sessionStorage.getItem("jwt") ? true : false;
   const router = useRouter()
+
+  const [totalCart, setTotalCart] = useState(0)
+
+  const user = JSON.parse(sessionStorage.getItem('user'))
+
+  const {updateCart, setUpdateCart} = useContext(UpdateCartContext)
 
   const onSignOut = () => {
     sessionStorage.clear()
@@ -35,6 +44,10 @@ const Header = () => {
     getCategoryList();
   }, []);
 
+  useEffect(()=>{
+    getCartItem()
+  },[updateCart])
+
   const getCategoryList = () => {
     GlobalApi.getCategory()
       .then((response) => {
@@ -44,6 +57,13 @@ const Header = () => {
         console.error("Error fetching categories:", error);
       });
   };
+
+
+  const getCartItem = async () => {
+    const cartItemList = await GlobalApi.getCartItem(user.id, jwt)
+    setTotalCart(cartItemList?.length)
+    console.log(cartItemList)
+  }
 
   return (
     <div className="flex p-5 justify-between">
@@ -88,7 +108,7 @@ const Header = () => {
       </div>
       <div className="flex gap-5 items-center">
         <h2 className="flex gap-2 text-lg ">
-          <ShoppingBag />0
+          <ShoppingBasket className="h-7 w-7" /><span className="bg-primary text-white px-2 rounded-full">{totalCart}</span>
         </h2>
 
         {!isLogIn ? (
