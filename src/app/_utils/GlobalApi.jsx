@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://192.168.1.8:1337/api",
+  baseURL: "http://192.168.1.4:1337/api",
 });
 
 const getCategory = () => axiosClient.get("/categories?populate=*");
@@ -45,14 +45,37 @@ const addToCart = (data, jwt) =>
 
 const getCartItem = (userId, jwt) =>
   axiosClient
-    .get("/carts?filters[userId][$eq]=" + userId + "&populate=*", {
-      headers: {
-        Authorization: "Bearer" + jwt,
-      },
-    })
+    .get(
+      "/carts?filters[userId][$eq]=" +
+        userId +
+        "&[populate][products][populate][images][populate][0]=url",
+      {
+        headers: {
+          Authorization: "Bearer" + jwt,
+        },
+      }
+    )
     .then((response) => {
-      return response.data.data;
+      const data = response.data.data;
+      const cartItemList = data.map((item, index) => ({
+        name: item.attributes.products?.data[0].attributes.name,
+        quantity: item.attributes.quantity,
+        amount: item.attributes.amount,
+        image:
+          item.attributes.products?.data[0].attributes.images?.data[0]
+            .attributes.url,
+        id: item.id
+      }));
+
+      return cartItemList;
     });
+
+const deleteCartItem = (id, jwt) =>
+  axiosClient.delete("/carts/" + id, {
+    headers: {
+      Authorization: "Bearer" + jwt,
+    },
+  });
 export default {
   getCategory,
   getCategoryList,
@@ -62,4 +85,5 @@ export default {
   signIn,
   addToCart,
   getCartItem,
+  deleteCartItem
 };

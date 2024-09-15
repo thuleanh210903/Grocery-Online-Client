@@ -23,7 +23,6 @@ const ProductItemDetail = ({ product }) => {
   const [loading, setLoading] = useState(false)
 
   const {updateCart, setUpdateCart} = useContext(UpdateCartContext)
-  console.log()
 
   const addToCart = ()=> {
     setLoading(true)
