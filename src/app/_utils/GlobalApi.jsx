@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://192.168.1.4:1337/api",
+  baseURL: "http://192.168.1.11:1337/api",
 });
 
 const getCategory = () => axiosClient.get("/categories?populate=*");
