@@ -14,8 +14,6 @@ const CreateAccount = () => {
   const router = useRouter()
   const onCreateAccount=() => {
     GlobalApi.register(username,email,password).then(response=> {
-      console.log(response.data.user)
-      console.log(response.data.jwt)
       sessionStorage.setItem('user',JSON.stringify(response.data.user))
       sessionStorage.setItem('jwt', response.data.jwt)
       toast("Account created successfully")
