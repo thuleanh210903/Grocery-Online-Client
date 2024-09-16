@@ -4,7 +4,9 @@ import { Input } from "@/components/ui/input";
 import GlobalApi from "@/app/_utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import { PayPalButtons } from "@paypal/react-paypal-js";
-
+import { ArrowBigRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 const Checkout = () => {
   const [totalCart, setTotalCart] = useState(0);
   const [cartItemList, setCartItemList] = useState([]);
@@ -44,16 +46,40 @@ const Checkout = () => {
     setSubTotal(total);
   }, [cartItemList]);
 
-
   const calculateTotal = () => {
     const total = subTotal * 0.9 + 15;
     return total.toFixed(2);
   };
 
-
   const onApprove = (data) => {
-    console.log(data)
-  }
+  
+    const totalOrder = calculateTotal()
+    console.log(totalOrder)
+
+    const payload = {
+      data: {
+        paymentId: (data.paymentId).toString(),
+        totalOrder: totalOrder,
+        username: username,
+        email: email,
+        phone: phone,
+        zip: zip,
+        address: address,
+        orderItemList: cartItemList,
+      },
+    };
+    console.log(data);
+    GlobalApi.createOrder(payload, jwt).then((response) => {
+      toast("Order Successfully");
+      cartItemList.forEach((item, index) => {
+        GlobalApi.deleteCartItem(item.id).then(response=> {
+
+        })
+      })
+
+      router.replace('/order-confirmation')
+    });
+  };
   return (
     <div className="">
       <h2 className="p-3 bg-primary text-xl font-bold text-center text-white">
@@ -108,24 +134,27 @@ const Checkout = () => {
               Total: <span>${calculateTotal()}</span>{" "}
             </h2>
 
-            <PayPalButtons
-              style={{ layout: "horizontal" }}
-              onApprove={onApprove}
-              forceReRender={[subTotal]}
-              createOrder={(data, actions) => {
-                const total = calculateTotal();
-                return actions.order.create({
-                  purchase_units: [
-                    {
-                      amount: {
-                        value: total,
-                        currency_code: "USD",
+            <Button onClick = {() => onApprove({paymentId:123})}>Payment <ArrowBigRight /></Button>
+          
+              <PayPalButtons
+                style={{ layout: "horizontal" }}
+                onApprove={onApprove}
+                forceReRender={[subTotal]}
+                createOrder={(data, actions) => {
+                  const total = calculateTotal();
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          value: total,
+                          currency_code: "USD",
+                        },
                       },
-                    },
-                  ],
-                });
-              }}
-            />
+                    ],
+                  });
+                }}
+              />
+          
           </div>
         </div>
       </div>
