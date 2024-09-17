@@ -46,15 +46,15 @@ const Header = () => {
 
   const [cartItemList, setCartItemList] = useState([]);
 
-  const [subTotal, setSubTotal] = useState([])
+  const [subTotal, setSubTotal] = useState([]);
   useEffect(() => {
     let total = 0;
-    cartItemList.forEach(element => {
-      total+=element.amount
+    cartItemList.forEach((element) => {
+      total += element.amount;
     });
 
-    setSubTotal(total)
-  }, [cartItemList])
+    setSubTotal(total);
+  }, [cartItemList]);
 
   const onSignOut = () => {
     sessionStorage.clear();
@@ -160,7 +160,11 @@ const Header = () => {
                 <h2 className="text-lg font-bold flex justify-between">
                   Subtotal: {subTotal}
                 </h2>
-                <Button onClick={() => router.push(jwt?'/checkout':'/sign-in')}>Order</Button>
+                <Button
+                  onClick={() => router.push(jwt ? "/checkout" : "/sign-in")}
+                >
+                  Order
+                </Button>
               </div>
             </SheetClose>
           </SheetContent>
@@ -177,7 +181,12 @@ const Header = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>My order</DropdownMenuItem>
+              <DropdownMenuItem>
+                <a href="/my-order">
+                  My order
+                </a>
+              </DropdownMenuItem>
+           
               <DropdownMenuItem onClick={() => onSignOut()}>
                 Logout
               </DropdownMenuItem>

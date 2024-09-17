@@ -66,6 +66,7 @@ const Checkout = () => {
         zip: zip,
         address: address,
         orderItemList: cartItemList,
+        userId: user.id
       },
     };
     console.log(data);

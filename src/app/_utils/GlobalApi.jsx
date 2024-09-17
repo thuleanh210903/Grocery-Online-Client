@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://192.168.1.28:1337/api",
+  baseURL: "http://192.168.1.11:1337/api",
 });
 
 const getCategory = () => axiosClient.get("/categories?populate=*");
@@ -84,6 +84,22 @@ const createOrder = (data,jwt) => axiosClient.post('/orders',data, {
     Authorization: "Bearer" + jwt,
   },
 })
+
+
+const getMyOrder= (userId, jwt) => axiosClient.get('/orders?filters[userId][$eq]='+userId+'&populate[orderItemList][populate][product][populate][images]=url').then(resp => {
+  const response = resp.data.data;
+
+  const orderList = response.map(item=> ({
+    id: item.id,
+    totalOrder: item.attributes.totalOrder,
+    paymentId:item.attributes.paymentId  ,
+    orderItemList: item.attributes.orderItemList,
+    createdAt: item.attributes.createdAt,
+    status: item.attributes.status
+  }))
+
+  return orderList
+})
 export default {
   getCategory,
   getCategoryList,
@@ -94,5 +110,6 @@ export default {
   addToCart,
   getCartItem,
   deleteCartItem,
-  createOrder
+  createOrder,
+  getMyOrder
 };
