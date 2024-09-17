@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdateCartContext";
 import { useState } from "react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import Footer from "./_components/Footer";
 
 const roboto = Roboto({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
           {showHeader && <Header />}
           {children}
           <Toaster />
+          <Footer />
         </UpdateCartContext.Provider>
       </body>
     </html>
